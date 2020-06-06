@@ -1,0 +1,9 @@
+.loader-container{
+    text-align: center;
+    font-size: 23px;
+    padding: 30px;
+}
+
+.loader-container .loader-icon{
+    color: red
+}

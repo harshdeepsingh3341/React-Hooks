@@ -1,0 +1,9 @@
+.todos-container {
+}
+
+.todos-container .todos {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    flex-wrap: wrap;
+}

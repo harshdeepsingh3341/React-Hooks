@@ -1,0 +1,46 @@
+.todo-container {
+    flex-basis: 23%;
+    background-color: salmon;
+    margin: 10px 0;
+    padding: 7px;
+    -webkit-box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.75);
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.75);
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.todo-container .todo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.title.completed {
+    color: #424242;
+    text-decoration: line-through;
+}
+
+.title.completed, .title.input{
+    cursor: unset !important;
+}
+
+.todo .title {
+    flex-basis: 92%;
+}
+
+.todo .completed-icon {
+    flex-basis: 5%;
+}
+
+.todo .title, .todo .completed-icon {
+    cursor: pointer;
+}
+
+.todo-container .save-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
