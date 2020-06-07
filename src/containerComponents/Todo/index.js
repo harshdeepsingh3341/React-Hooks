@@ -1,61 +1,82 @@
-import React, {Component} from 'react';
+import React, {useEffect, useCallback,useMemo} from 'react';
 import './styles.css';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {fetchTodos, updateTodo} from "./Todo.actions";
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchTodos, updateTodo as updateTodoAction} from "./Todo.actions";
 import Loader from "../../components/Loader";
 import config from "../../config/config";
 import TodoUnit from "../../components/TodoUnit";
 
-class Todo extends Component {
-	constructor(props) {
-		super(props);
-	}
+const Todo = (props) => {
 
-	componentDidMount = () => {
-		this.props.fetchTodos();
+	const {
+		fetchTodosStatus,
+		todos,
+	} = useSelector(state=> ({...state.todo}));
+
+	const dispatch = useDispatch();
+
+	useEffect(
+		() => {
+			dispatch(fetchTodos());
+		},
+		[fetchTodos]
+	);
+
+	const updateTodo = (todo) => {
+		dispatch(updateTodoAction(todo));
 	};
+	// const checkedTodos = todos.filter(todo => todo.completed);
 
-	updateTodo = (todo) => {
-		this.props.updateTodo(todo);
-	}
+	const checkedTodos = useMemo(
+		() => [...todos.filter(todo => todo.completed)],
+	[]
+	)
 
-	render() {
-		const {
-			fetchTodosStatus,
-			todos
-		} = this.props;
-		return (
-			<div className="todos-container">
+	const completedTodos = useCallback(
+		() => {
+			return todos.filter(todo => todo.completed).length
+		},
+		[todos]
+	);
+
+	return (
+		<div className="todos-container">
+			{
+				fetchTodosStatus.status === config.status.started &&
+				<Loader/>
+			}
+			{
+				completedTodos()
+			}
+			Checked
+			<div className="todos" style={{opacity: 0.7}}>
 				{
-					fetchTodosStatus === config.status.started &&
-					<Loader/>
+					checkedTodos.map(todo =>
+						<TodoUnit
+							key={todo.id}
+							todo={todo}
+							onTodoChange={updateTodo}
+						/>)
 				}
-				<div className="todos">
-					{
-						todos.map((todo) =>
-							<TodoUnit
-								key={todo.id}
-								todo={todo}
-								onTodoChange={this.updateTodo}
-							/>
-						)
-					}
-				</div>
 			</div>
-		)
-	}
+			<hr/>
+			All
+			<div className="todos">
+				{
+					todos.map((todo) =>
+						<TodoUnit
+							key={todo.id}
+							todo={todo}
+							onTodoChange={updateTodo}
+						/>
+					)
+				}
+			</div>
+		</div>
+	)
 }
 
 Todo.propTypes = {};
 
-const mapStateToProps = (state) => ({
-	...state.todo
-});
-
-const mapDispatchToProps = {
-	fetchTodos,
-	updateTodo,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Todo);
+export default Todo;

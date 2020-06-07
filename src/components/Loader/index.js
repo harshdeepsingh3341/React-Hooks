@@ -7,20 +7,19 @@ import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
 
 library.add(faCircleNotch)
 
-export default class Loader extends Component{
 
-	render() {
-		return (
-			<div className="loader-container">
-				<FontAwesomeIcon
-					icon={"circle-notch"}
-					className="loader-icon"
-					spin
-				/>
-			</div>
-		);
-	}
+const Loader = () => {
+	return (
+		<div className="loader-container">
+			<FontAwesomeIcon
+				icon={"circle-notch"}
+				className="loader-icon"
+				spin
+			/>
+		</div>
+	);
+};
 
-}
+Loader.propTypes = {};
 
-Loader.propTypes={};
+export default Loader;

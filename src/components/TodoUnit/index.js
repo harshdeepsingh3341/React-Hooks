@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import './styles.css'
 import PropTypes from 'prop-types';
 import {library} from "@fortawesome/fontawesome-svg-core";
@@ -7,68 +7,76 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 library.add(faSquare, faCheckSquare)
 
-export default class TodoUnit extends Component {
+const TodoUnit = ({todo, todo: {completed, title: titleFromProps}, onTodoChange}) => {
+	const [isEdit, setIsEdit] = useState(false);
+	const [title, setTitle] = useState(titleFromProps);
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			isEdit: false,
-			title: this.props.todo.title
-		}
+	const completedRef = useRef(undefined);
+
+
+	useEffect(
+		() => {
+			if(completedRef && !completed){
+				// completedRef.current.click();
+			}
+		},
+		[completedRef]
+	)
+
+	useEffect(
+		() => {
+			console.log('Title From props changed');
+			setTitle(`"${titleFromProps}"`)
+		},
+		[titleFromProps, setTitle]
+	);
+
+	const toggleCompleted = () => {
+		onTodoChange({...todo, completed: !todo.completed});
 	}
 
-	toggleCompleted = () => {
-		this.props.onTodoChange({...this.props.todo, completed: !this.props.todo.completed})
-	}
+	const save = () => {
+		onTodoChange({...todo, title});
+		setIsEdit(false);
+	};
 
-	save = () => {
-		this.props.onTodoChange({...this.props.todo, title: this.state.title});
-		this.setState({isEdit: false})
-	}
-
-	render() {
-		const {todo: {completed}} = this.props;
-		const {isEdit, title} = this.state;
-
-		return (
-			<div className="todo-container">
-				<div className="todo">
-					<div className="completed-icon" onClick={this.toggleCompleted}>
-						<FontAwesomeIcon
-							icon={['far', completed ? "check-square" : "square"]}
-						/>
-					</div>
-					{
-						isEdit ?
-							<input
-								type="text"
-								name="title"
-								id="title"
-								value={title}
-								onChange={({target: {value}}) => this.setState({title: value})}
-								className="title input"
-							/> :
-							<div
-								className={`title ${completed ? "completed" : ""}`}
-								onClick={() => !completed && this.setState({isEdit: !this.state.isEdit})}
-							>
-								{title}
-							</div>
-					}
+	return (
+		<div className="todo-container">
+			<div className="todo">
+				<div className="completed-icon" onClick={toggleCompleted} ref={completedRef}>
+					<FontAwesomeIcon
+						icon={['far', completed ? "check-square" : "square"]}
+					/>
 				</div>
 				{
-					isEdit &&
-					<div className="save-button-container">
-						<button onClick={() => this.setState({isEdit: false})}>
-							Cancel
-						</button>
-						<button onClick={this.save}>Save</button>
-					</div>
+					isEdit ?
+						<input
+							type="text"
+							name="title"
+							id="title"
+							value={title}
+							onChange={({target: {value}}) => setTitle(value)}
+							className="title input"
+						/> :
+						<div
+							className={`title ${completed ? "completed" : ""}`}
+							onClick={() => !completed && setIsEdit(oldIsEdit => !oldIsEdit)}
+						>
+							{title}
+						</div>
 				}
 			</div>
-		);
-	}
-
+			{
+				isEdit &&
+				<div className="save-button-container">
+					<button onClick={() => setIsEdit(false)}>
+						Cancel
+					</button>
+					<button onClick={save}>Save</button>
+				</div>
+			}
+		</div>
+	);
 }
 
 TodoUnit.propTypes = {
@@ -76,5 +84,8 @@ TodoUnit.propTypes = {
 		title: PropTypes.string,
 		completed: PropTypes.bool,
 		onTodoChange: PropTypes.func
-	})
+	}),
+	onTodoChange: PropTypes.func
 };
+
+export default TodoUnit;
