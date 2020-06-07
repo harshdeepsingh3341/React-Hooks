@@ -13,15 +13,15 @@ export default createReducer(
 	{
 		[FETCH_TODO_STARTED]: (state, action) => ({
 			...state,
-			fetchTodosStatus: action.payload
+			fetchTodosStatus: {...state.fetchTodosStatus, status: action.payload}
 		}),
 		[FETCH_TODO_FAILURE]: (state, action) => ({
 			...state,
-			fetchTodosStatus: action.payload
+			fetchTodosStatus: {...state.fetchTodosStatus, status: action.payload}
 		}),
 		[FETCH_TODO_SUCCESS]: (state, action) => ({
 			...state,
-			fetchTodosStatus: action.payload
+			fetchTodosStatus: {...state.fetchTodosStatus, status: action.payload}
 		}),
 		[ADD_TODOS]: (state, action) => ({
 			...state,
